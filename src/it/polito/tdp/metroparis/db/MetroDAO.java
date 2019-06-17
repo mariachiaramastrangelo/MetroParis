@@ -68,5 +68,48 @@ public class MetroDAO {
 		return linee;
 	}
 
+	public boolean esisteConnessione(Fermata partenza, Fermata arrivo) {
+		final String sql= "SELECT COUNT(*) AS cnt " + 
+				"FROM connessione c " + 
+				"WHERE c.`id_stazP`=?  AND c.`id_stazA`=? ";
+		try {
+		Connection conn= DBConnect.getConnection();
+		PreparedStatement st= conn.prepareStatement(sql);
+		st.setInt(1, partenza.getIdFermata());
+		st.setInt(2, arrivo.getIdFermata());
+		ResultSet rs= st.executeQuery();
+		rs.next();
+		int numero= rs.getInt("cnt");
+		
+		conn.close();
+		return (numero>0);
+		
+		}catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<Fermata> stazioniArrivo(Fermata partenza) {
+		final String sql="SELECT c.`id_stazA` " + 
+				"FROM connessione c " + 
+				"WHERE c.`id_stazP`=? ";
+		List<Fermata> arrivi = new ArrayList<>();
+		try {
+			Connection conn= DBConnect.getConnection();
+			PreparedStatement st= conn.prepareStatement(sql);
+			st.setInt(1, partenza.getIdFermata());
+			ResultSet rs= st.executeQuery();
+			while(rs.next()) {
+				//oggetto effimero
+				arrivi.add(new Fermata(rs.getInt("id_stazA"), null, null));
+			}
+			conn.close();
+			return arrivi;
+		}catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
 
 }
