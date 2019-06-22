@@ -8,6 +8,7 @@ public class TestModel {
 		m.creaGrafo();
 		
 		System.out.println(m.getGrafo()) ;
+		System.out.println(m.trovaCamminomMinimo(m.getFermateIdMap().get(3), m.getFermateIdMap().get(444) ));
 
 	}
 
